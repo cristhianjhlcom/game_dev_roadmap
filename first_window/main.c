@@ -22,16 +22,19 @@ bool init(void) {
         return false;
     }
 
-    state.window = SDL_CreateWindow("SDL2 Window", SDL_WINDOWPOS_CENTERED,
-                                    SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
-                                    SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    state.window = SDL_CreateWindow(
+        "SDL2 Window",
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        SDL_WINDOW_SHOWN);
     if (state.window == NULL) {
         printf("SDL Window Creation Failed %s\n", SDL_GetError());
         return false;
     }
 
-    state.renderer =
-        SDL_CreateRenderer(state.window, -1, SDL_RENDERER_ACCELERATED);
+    state.renderer = SDL_CreateRenderer(state.window, -1, SDL_RENDERER_ACCELERATED);
     if (state.renderer == NULL) {
         printf("SDL Renderer Creation Failed %s\n", SDL_GetError());
         return false;
