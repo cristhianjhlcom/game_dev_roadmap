@@ -14,8 +14,15 @@ typedef struct State
     SDL_Window *window;
     SDL_Renderer *renderer;
     bool is_running;
-    SDL_Rect square;
-    SDL_Texture *texture;
+    struct
+    {
+        int w, h;
+        SDL_Texture *texture;
+        struct
+        {
+            int x, y;
+        } pos;
+    } player;
 } state_t;
 
 state_t state;
@@ -90,8 +97,8 @@ SDL_Texture *load_texture(const char *path)
 
 bool load_media(void)
 {
-    state.texture = load_texture("assets/graphics/player.png");
-    if (state.texture == NULL)
+    state.player.texture = load_texture("assets/graphics/player.png");
+    if (state.player.texture == NULL)
     {
         SDL_Log("Load player texture failed %s\n", IMG_GetError());
         return false;
@@ -101,28 +108,33 @@ bool load_media(void)
 }
 
 // Draw.
+/*
 void square_blit(void)
 {
     SDL_SetRenderDrawColor(state.renderer, 0xFF, 0x00, 0xFF, 0xFF);
     // SDL_RenderCopy(state.renderer, SDL_Texture *texture, const SDL_Rect *srcrect, const SDL_Rect *dstrect)
     SDL_RenderFillRect(state.renderer, &state.square);
 }
+*/
 
-void texture_blit(SDL_Texture *texture)
+void texture_blit(state_t state)
 {
-    SDL_RenderCopy(state.renderer, texture, NULL, &state.square);
+    SDL_Rect dest;
+    dest.x = state.player.pos.x;
+    dest.y = state.player.pos.y;
+    dest.w = state.player.w;
+    dest.h = state.player.h;
+    SDL_RenderCopy(state.renderer, state.player.texture, NULL, &dest);
 }
 
 // Player inputs.
 void mouse_handler(SDL_Event *event)
 {
     printf("Mouse click x %d - y %d\n", event->button.x, event->button.y);
-    state.square = (SDL_Rect){
-        .x = event->button.x,
-        .y = event->button.y,
-        .w = 100,
-        .h = 100,
-    };
+    state.player.pos.x = event->button.x;
+    state.player.pos.y = event->button.y;
+    state.player.w = 100;
+    state.player.h = 100;
 }
 
 int main(int argv, char *argc[])
@@ -161,7 +173,7 @@ int main(int argv, char *argc[])
         }
         render();
         // square_blit();
-        texture_blit(state.texture);
+        texture_blit(state);
         present();
     }
 
