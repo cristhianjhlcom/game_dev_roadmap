@@ -55,6 +55,12 @@ bool init(void)
         return false;
     }
 
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    {
+        printf("SDL Image Initialization Failed %s\n", IMG_GetError());
+        return false;
+    }
+
     printf("game is running...\n");
     return true;
 }
